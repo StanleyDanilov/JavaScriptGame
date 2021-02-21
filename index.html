@@ -8,16 +8,22 @@
 	</head>
 	<body>
 		<div class="action">
-			<span class="time-wrapper">Game time is <span class="show-time">5</span><b> sec</b></span>
+			<span class="show-time">You need to set the time.</span>
 			<div class="game-score">Score: <span class="game-score-number">0</span></div>
 
 			<div class="game-field">
-				<button class="btn-begin">Begin</button>
+				<button class="btn-begin-dis btn" disabled>Begin</button>
+				<div class="score-table hide-item"></div>
+				<button class="btn-new-game btn hide-item">New game</button>
 			</div>
 
 			<form class="form">
 				<span class="form-title">Set time (seconds)</span>
 				<input class="form-input" type="number" value="5" min="2" max="60">
+				<div>
+					<button class="form-btn btn-submit" type="submit">Confirm</button>
+					<button class="form-btn btn-cancel" disabled>Cancel</button>
+				</div>
 			</form>
 
 		</div>

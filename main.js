@@ -1,44 +1,114 @@
 window.addEventListener('load', () => {
 
-  let btnBegin = document.querySelector('.btn-begin');
-  let gameField = document.querySelector('.game-field');
-  let inputTime = document.querySelector('.form-input');
+  let showTime = document.querySelector('.show-time');
   let gameScore = document.querySelector('.game-score-number');
-  let fieldWidth = gameField.getBoundingClientRect().width;
-  let fieldHeight = gameField.getBoundingClientRect().height;
-  let scoreCount = 0;
-  
-  inputTime.addEventListener('input', () => {
-    document.querySelector('.show-time').innerHTML = inputTime.value;
+  let gameField = document.querySelector('.game-field');
+  let btnBegin = document.querySelector('.btn-begin-dis');
+
+  let inputTime = document.querySelector('.form-input');
+  let confirmBtn = document.querySelector('.btn-submit');
+  let cancelBtn = document.querySelector('.btn-cancel');
+  let scoreTable = document.querySelector('.score-table');
+  let newGameBtn = document.querySelector('.btn-new-game');
+
+  let scoreCount = 0; // вставить в таймаут
+
+  confirmBtn.addEventListener('click', e => {
+    e.preventDefault();
+
+    showTime.innerHTML = `Time is ${inputTime.value} sec`;
+
+    inputTime.toggleAttribute('disabled');
+    confirmBtn.toggleAttribute('disabled');
+    cancelBtn.toggleAttribute('disabled');
+
+    btnBegin.toggleAttribute('disabled');
+    btnBegin.classList.toggle('btn-after-disable');
   });
 
-  btnBegin.addEventListener('click', () => {
-    btnBegin.classList.add('hide-item');
-    gameField.style.background = '#fff';
-    
-    createTarget();
+  if (!(cancelBtn.getAttribute("disabled") == 'disabled')) {
+    cancelBtn.addEventListener('click', e => {
+    e.preventDefault();
 
-    setTimeout(function() {
-      btnBegin.classList.remove('hide-item');
-    }, inputTime.value);
-  });
+    showTime.innerHTML = 'You need to set the time.';
+    inputTime.toggleAttribute('disabled');
+    confirmBtn.toggleAttribute('disabled');
+    cancelBtn.toggleAttribute('disabled');
 
-  if (btnBegin.classList.contains('hide-item')) {
-
-    gameField.addEventListener('click', e => {
-      if (e.target.classList.contains('game-target')) {
-        scoreCount++;
-        gameScore.innerHTML = scoreCount;
-        gameField.removeChild(e.target);
-        createTarget();
-      };
+    btnBegin.toggleAttribute('disabled');
+    btnBegin.classList.toggle('btn-after-disable');
     });
   };
 
+  btnBegin.addEventListener('click', function() {
+    btnBegin.classList.toggle('hide-item');
+    gameField.style.background = '#fff';
+    let gameTime = inputTime.value;
+    
+    createTarget();
+
+    // let timeCount = setInterval(function() {
+    //   showTime.innerHTML = `${gameTime--} sec left`;
+    //   if (gameTime < 0) { clearInterval(timeCount) }
+    // }, 1000);
+
+    //чекнуть у Минина =====================================================================================
+
+    let timeCount = function() {
+      showTime.innerHTML = `${gameTime--} sec left`;
+      if (gameTime < 0) {
+        clearInterval(startTimer);
+        document.querySelector('.game-target').remove();
+        gameField.removeAttribute('style');
+        scoreTable.classList.toggle('hide-item');
+        scoreTable.innerHTML = `Time left. <br> Your score is ${scoreCount}`;
+        newGameBtn.classList.toggle('hide-item');
+        newGameBtn.classList.toggle('btn-after-disable');
+      }
+    };
+
+    timeCount();
+
+    let startTimer = setInterval(timeCount, 1000);
+
+    cancelBtn.addEventListener('click', () => {
+      clearInterval(startTimer);
+      document.querySelector('.game-target').remove();
+      gameField.removeAttribute('style');
+      btnBegin.classList.toggle('hide-item');
+
+    });
+
+  });
+
+  gameField.addEventListener('click', e => {
+    if (e.target.classList.contains('game-target')) {
+      scoreCount++;
+      gameScore.innerHTML = scoreCount;
+      gameField.removeChild(e.target);
+      createTarget();
+    };
+  });
+
+  newGameBtn.addEventListener('click', () => {
+    scoreTable.classList.toggle('hide-item');
+    newGameBtn.classList.toggle('hide-item');
+    showTime.innerHTML = 'You need to set the time.';
+    inputTime.toggleAttribute('disabled');
+    confirmBtn.toggleAttribute('disabled');
+    btnBegin.classList.toggle('hide-item');
+    btnBegin.classList.remove('btn-after-disable');
+    btnBegin.toggleAttribute('disabled');
+    scoreCount = 0;
+    gameScore.innerHTML = scoreCount;
+  })
+
   function createTarget() {
+    let fieldWidth = gameField.getBoundingClientRect().width;
+    let fieldHeight = gameField.getBoundingClientRect().height;
     let gameTarget = document.createElement('div');
     let targetBorderRadius = ['0%', '50%'];
-    let targetSize = Math.floor((Math.random() * 50) + 35);
+    let targetSize = Math.floor((Math.random() * 40) + 30);
 
     gameTarget.classList.add('game-target');
     gameTarget.style.backgroundColor = getRandomColor();
