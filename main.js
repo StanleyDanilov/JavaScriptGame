@@ -64,6 +64,7 @@ window.addEventListener('load', () => {
         scoreTable.innerHTML = `Time left. <br> Your score is ${scoreCount}`;
         newGameBtn.classList.toggle('hide-item');
         newGameBtn.classList.toggle('btn-after-disable');
+        cancelBtn.toggleAttribute('disabled');
       }
     };
 
@@ -76,7 +77,7 @@ window.addEventListener('load', () => {
       document.querySelector('.game-target').remove();
       gameField.removeAttribute('style');
       btnBegin.classList.toggle('hide-item');
-
+      gameScore.innerHTML = 0;
     });
 
   });
